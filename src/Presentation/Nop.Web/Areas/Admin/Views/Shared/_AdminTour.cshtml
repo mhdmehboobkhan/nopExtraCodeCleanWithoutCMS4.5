@@ -1,0 +1,165 @@
+﻿@using Nop.Web.Framework.Models.AdminAreaTour
+@inject Nop.Services.Stores.IStoreService storeService
+@inject Nop.Services.Messages.IEmailAccountService emailAccountService
+@inject Nop.Services.Topics.ITopicService topicService
+
+@{
+    var showTour = ViewBag.ShowTour ?? false;
+}
+@if (showTour)
+{
+    <link rel="stylesheet" href="~/lib_npm/shepherd.js/css/shepherd.css" />
+    <script src="~/lib_npm/shepherd.js/js/shepherd.min.js"></script>
+    <script src="~/js/admintour/admin.tour.common.js"></script>
+
+    int? entityId = null;
+    var tourStep = (TourStep)ViewBag.TourStep;
+    switch (tourStep)
+    {
+        case TourStep.GeneralSettings:
+            entityId = (await storeService.GetAllStoresAsync()).FirstOrDefault()?.Id ?? 0;
+
+            <script asp-exclude-from-bundle="true" asp-location="Footer" src="~/js/admintour/admin.tour.generalsettings.js"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    PersonalizeStoreIntroTitle: '@T("Admin.ConfigurationSteps.PersonalizeStore.Intro.Title")',
+                    PersonalizeStoreIntroText: '@T("Admin.ConfigurationSteps.PersonalizeStore.Intro.Text")',
+
+                    PersonalizeStoreBasicAdvancedTitle: '@T("Admin.ConfigurationSteps.PersonalizeStore.BasicAdvanced.Title")',
+                    PersonalizeStoreBasicAdvancedText: '@T("Admin.ConfigurationSteps.PersonalizeStore.BasicAdvanced.Text")',
+
+                    PersonalizeStoreThemeTitle: '@T("Admin.ConfigurationSteps.PersonalizeStore.Theme.Title")',
+                    PersonalizeStoreThemeText: '@T("Admin.ConfigurationSteps.PersonalizeStore.Theme.Text")',
+
+                    PersonalizeStoreLogoTitle: '@T("Admin.ConfigurationSteps.PersonalizeStore.Logo.Title")',
+                    PersonalizeStoreLogoText: '@T("Admin.ConfigurationSteps.PersonalizeStore.Logo.Text")',
+                };
+            </script>
+            break;
+
+        case TourStep.Store:
+
+            <script asp-exclude-from-bundle="true"  src="~/js/admintour/admin.tour.store.js" asp-location="Footer"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    Back: '@T("Admin.ConfigurationSteps.Back")',
+                    NextStep: '@T("Admin.ConfigurationSteps.NextStep")',
+                    NextPage: '@T("Admin.ConfigurationSteps.NextPage")',
+
+                    StoreNameTitle: '@T("Admin.ConfigurationSteps.Store.Name.Title")',
+                    StoreNameText: '@T("Admin.ConfigurationSteps.Store.Name.Text")',
+
+                    StoreUrlTitle: '@T("Admin.ConfigurationSteps.Store.Url.Title")',
+                    StoreUrlText: '@T("Admin.ConfigurationSteps.Store.Url.Text")',
+
+                    StoreSslTitle: '@T("Admin.ConfigurationSteps.Store.Ssl.Title")',
+                    StoreSslText: '@T("Admin.ConfigurationSteps.Store.Ssl.Text")',
+                };
+            </script>
+            break;
+
+        case TourStep.EmailAccountList:
+            entityId = (await emailAccountService.GetAllEmailAccountsAsync()).FirstOrDefault()?.Id ?? 0;
+
+            <script asp-exclude-from-bundle="true" src="~/js/admintour/admin.tour.emailaccountlist.js" asp-location="Footer"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    EmailAccountListEmailAccounts1Title: '@T("Admin.ConfigurationSteps.EmailAccountList.EmailAccounts1.Title")',
+                    EmailAccountListEmailAccounts1Text: '@T("Admin.ConfigurationSteps.EmailAccountList.EmailAccounts1.Text")',
+
+                    EmailAccountListEmailAccounts2Title: '@T("Admin.ConfigurationSteps.EmailAccountList.EmailAccounts2.Title")',
+                    EmailAccountListEmailAccounts2Text: '@T("Admin.ConfigurationSteps.EmailAccountList.EmailAccounts2.Text")',
+
+                    EmailAccountListDefaultEmailAccountTitle: '@T("Admin.ConfigurationSteps.EmailAccountList.DefaultEmailAccount.Title")',
+                    EmailAccountListDefaultEmailAccountText: '@T("Admin.ConfigurationSteps.EmailAccountList.DefaultEmailAccount.Text")',
+
+                    EmailAccountListEditTitle: '@T("Admin.ConfigurationSteps.EmailAccountList.Edit.Title")',
+                    EmailAccountListEditText: '@T("Admin.ConfigurationSteps.EmailAccountList.Edit.Text")',
+                };
+            </script>
+            break;
+
+        case TourStep.EmailAccount:
+
+            <script asp-exclude-from-bundle="true" src="~/js/admintour/admin.tour.emailaccount.js" asp-location="Footer"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    EmailAccountEmailAddressTitle: '@T("Admin.ConfigurationSteps.EmailAccount.EmailAddress.Title")',
+                    EmailAccountEmailAddressText: '@T("Admin.ConfigurationSteps.EmailAccount.EmailAddress.Text")',
+
+                    EmailAccountDisplayNameTitle: '@T("Admin.ConfigurationSteps.EmailAccount.DisplayName.Title")',
+                    EmailAccountDisplayNameText: '@T("Admin.ConfigurationSteps.EmailAccount.DisplayName.Text")',
+
+                    EmailAccountHostTitle: '@T("Admin.ConfigurationSteps.EmailAccount.Host.Title")',
+                    EmailAccountHostText: '@T("Admin.ConfigurationSteps.EmailAccount.Host.Text")',
+
+                    EmailAccountPortTitle: '@T("Admin.ConfigurationSteps.EmailAccount.Port.Title")',
+                    EmailAccountPortText: '@T("Admin.ConfigurationSteps.EmailAccount.Port.Text")',
+
+                    EmailAccountUsernameTitle: '@T("Admin.ConfigurationSteps.EmailAccount.Username.Title")',
+                    EmailAccountUsernameText: '@T("Admin.ConfigurationSteps.EmailAccount.Username.Text")',
+
+                    EmailAccountPasswordTitle: '@T("Admin.ConfigurationSteps.EmailAccount.Password.Title")',
+                    EmailAccountPasswordText: '@T("Admin.ConfigurationSteps.EmailAccount.Password.Text")',
+
+                    EmailAccountUseSslTitle: '@T("Admin.ConfigurationSteps.EmailAccount.UseSsl.Title")',
+                    EmailAccountUseSslText: '@T("Admin.ConfigurationSteps.EmailAccount.UseSsl.Text")',
+
+                    EmailAccountDefaultCredentialsTitle: '@T("Admin.ConfigurationSteps.EmailAccount.DefaultCredentials.Title")',
+                    EmailAccountDefaultCredentialsText: '@T("Admin.ConfigurationSteps.EmailAccount.DefaultCredentials.Text")',
+
+                    EmailAccountTestEmailTitle: '@T("Admin.ConfigurationSteps.EmailAccount.TestEmail.Title")',
+                    EmailAccountTestEmailText: '@T("Admin.ConfigurationSteps.EmailAccount.TestEmail.Text")',
+                };
+            </script>
+            break;
+
+        case TourStep.TopicList:
+            entityId = 0;
+
+            <script asp-exclude-from-bundle="true" src="~/js/admintour/admin.tour.topiclist.js" asp-location="Footer"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    Done: '@T("Admin.ConfigurationSteps.Done")',
+
+                    TopicListTopics1Title: '@T("Admin.ConfigurationSteps.TopicList.Topics1.Title")',
+                    TopicListTopics1Text: '@T("Admin.ConfigurationSteps.TopicList.Topics1.Text")',
+
+                    TopicListTopics2Title: '@T("Admin.ConfigurationSteps.TopicList.Topics2.Title")',
+                    TopicListTopics2Text: '@T("Admin.ConfigurationSteps.TopicList.Topics2.Text")',
+
+                    TopicListEditTitle: '@T("Admin.ConfigurationSteps.TopicList.Edit.Title")',
+                    TopicListEditText: '@T("Admin.ConfigurationSteps.TopicList.Edit.Text")',
+                };
+            </script>
+            break;
+
+        case TourStep.Topic:
+
+            <script asp-exclude-from-bundle="true" src="~/js/admintour/admin.tour.topic.js" asp-location="Footer"></script>
+            <script asp-location="Footer">
+                var localized_data = {
+                    Done: '@T("Admin.ConfigurationSteps.Done")',
+
+                    TopicTitleContentTitle: '@T("Admin.ConfigurationSteps.Topic.TitleContent.Title")',
+                    TopicTitleContentText: '@T("Admin.ConfigurationSteps.Topic.TitleContent.Text")',
+
+                    TopicPreviewTitle: '@T("Admin.ConfigurationSteps.Topic.Preview.Title")',
+                    TopicPreviewText: '@T("Admin.ConfigurationSteps.Topic.Preview.Text")',
+                };
+            </script>
+            break;
+
+        default:
+            break;
+    }
+
+    <script asp-location="Footer">
+        localized_data.Back = '@T("Admin.ConfigurationSteps.Back")';
+        localized_data.NextStep = '@T("Admin.ConfigurationSteps.NextStep")';
+        localized_data.NextPage = '@T("Admin.ConfigurationSteps.NextPage")';
+
+        AdminTourDataProvider.init(localized_data, @entityId);
+    </script>
+}
+

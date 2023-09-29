@@ -1,0 +1,29 @@
+﻿using Nop.Web.Framework.Models;
+using Nop.Web.Framework.Mvc.ModelBinding;
+
+namespace Nop.Web.Areas.Admin.Models.Settings
+{
+    /// <summary>
+    /// Represents a display default menu item settings model
+    /// </summary>
+    public partial record DisplayDefaultMenuItemSettingsModel : BaseNopModel, ISettingsModel
+    {
+        #region Properties
+
+        public int ActiveStoreScopeConfiguration { get; set; }
+
+        [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.DisplayDefaultMenuItemSettings.DisplayHomepageMenuItem")]
+        public bool DisplayHomepageMenuItem { get; set; }
+        public bool DisplayHomepageMenuItem_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.DisplayDefaultMenuItemSettings.DisplayCustomerInfoMenuItem")]
+        public bool DisplayCustomerInfoMenuItem { get; set; }
+        public bool DisplayCustomerInfoMenuItem_OverrideForStore { get; set; }
+
+        [NopResourceDisplayName("Admin.Configuration.Settings.GeneralCommon.DisplayDefaultMenuItemSettings.DisplayContactUsMenuItem")]
+        public bool DisplayContactUsMenuItem { get; set; }
+        public bool DisplayContactUsMenuItem_OverrideForStore { get; set; }
+
+        #endregion
+    }
+}

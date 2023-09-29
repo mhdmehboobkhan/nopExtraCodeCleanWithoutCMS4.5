@@ -1,0 +1,208 @@
+﻿@inject IWebHelper webHelper
+@inject IDateTimeHelper dateTimeHelper
+@inject IPermissionService permissionService
+@inject ICustomerService customerService
+@inject IEventPublisher eventPublisher
+@inject LocalizationSettings localizationSettings
+@inject StoreInformationSettings storeInformationSettings
+@inject Nop.Services.Localization.ILanguageService languageService
+@using System.Globalization
+@using Nop.Core.Domain
+@using Nop.Core.Domain.Localization
+@using Nop.Services.Customers
+@using Nop.Services.Helpers
+@using Nop.Services.Security
+@using Nop.Web.Framework.UI
+
+@{
+    var returnUrl = webHelper.GetRawUrl(Context.Request);
+
+    //page title
+    string adminPageTitle = !string.IsNullOrWhiteSpace(ViewBag.PageTitle) ? ViewBag.PageTitle + " / " : "";
+    adminPageTitle += T("Account.DashBoard").Text;
+
+    //avatar
+    var currentCustomer = await workContext.GetCurrentCustomerAsync();
+
+    //event
+    await eventPublisher.PublishAsync(new PageRenderingEvent(NopHtml));
+
+    //info: we specify "Admin" area for actions and widgets here for cases when we use this layout in a plugin that is running in a different area than "admin"
+}
+<!DOCTYPE html>
+<html lang="@CultureInfo.CurrentUICulture.TwoLetterISOLanguageName" dir="@Html.GetUIDirection(localizationSettings.IgnoreRtlPropertyForAdminArea)">
+<head>
+    <title>@adminPageTitle</title>
+    <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    @NopHtml.GenerateHeadCustom()
+
+    @* CSS & Script resources *@
+    @{
+        await Html.RenderPartialAsync("_AdminCustomerScripts");
+    }
+
+    @*Insert favicon and app icons head code*@
+    @await Component.InvokeAsync("Favicon")
+</head>
+<body class="hold-transition sidebar-mini layout-fixed control-sidebar-slide-open">
+    <div class="throbber">
+        <div class="curtain">
+        </div>
+        <div class="curtain-content">
+            <div>
+                <h1 class="throbber-header">@T("Common.Wait")</h1>
+                <p>
+                    <img src="@Url.Content("~/css/admin/images/throbber-synchronizing.gif")" alt="" />
+                </p>
+            </div>
+        </div>
+    </div>
+    <div id="ajaxBusy">
+        <span>&nbsp;</span>
+    </div>
+    <div class="wrapper fulllayout">
+        @if (IsSectionDefined("header"))
+        {
+            @RenderSection("header")
+        }
+        else
+        {
+            <nav class="main-header navbar navbar-expand-md navbar-dark bg-dark">
+                <ul class="navbar-nav pl-2 pl-md-0">
+                    <li class="nav-item">
+                        <a class="nav-link menu-btn" id="nopSideBarPusher" data-widget="pushmenu" href="#"><i class="fas fa-ellipsis-v"></i><i class="fas fa-list"></i></a>
+                    </li>
+                </ul>
+                <a href="@Url.RouteUrl("Dashboard")" class="brand-link navbar-dark">
+                    <img src="~/css/admin/images/logo.png" alt="logo.png" class="brand-image logo d-block d-md-none d-sm-block d-sm-none">
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    <i class="fas fa-ellipsis-v"></i>
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse customernav" id="navbarText">
+                    <ul class="navbar-nav ml-auto pl-2">
+                        <li class="nav-item">
+                            @await Component.InvokeAsync("LanguageSelector")
+                        </li>
+                        @{
+                            if (workContext.OriginalCustomerIfImpersonated != null)
+                            {
+                                var impersonatedCustomerName = await customerService.IsRegisteredAsync(currentCustomer) ? await customerService.FormatUsernameAsync(currentCustomer) : string.Empty;
+                                <li class="nav-item">
+                                    <a href="@Url.RouteUrl("Logout")" class="finish-impersonation nav-link" title="@T("Account.ImpersonatedAs.Finish.Hint")">@T("Account.ImpersonatedAs.Finish")</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="javascript:void(0);" class="nav-link void">@string.Format(T("Account.ImpersonatedAs").Text, impersonatedCustomerName)</a>
+                                </li>
+                            }
+                        }
+                        @if (await customerService.IsAdminAsync(currentCustomer))
+                        {
+                            <li class="nav-item">
+                                <a href="@Url.Content("~/Admin")" class="nav-link">@T("Account.Administration")</a>
+                            </li>
+                        }
+                        @if (await customerService.IsRegisteredAsync(currentCustomer))
+                        {
+                            <li class="nav-item mb">
+                                <a href="@Url.RouteUrl("CustomerInfo")" class="nav-link">@await customerService.GetCustomerFullNameAsync(currentCustomer)</a>
+                            </li>
+                            <li class="nav-item mb">
+                                <a href="@Url.RouteUrl("Logout")" class="nav-link">@T("Admin.Header.Logout")</a>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a asp-controller="Home" asp-action="Index" asp-area="" class="nav-link">@T("Admin.Header.PublicStore")</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        }
+        @if (IsSectionDefined("headermenu"))
+        {
+            @RenderSection("headermenu")
+        }
+        else
+        {
+            <aside class="main-sidebar sidebar-dark-primary elevation-4">
+                <!-- Brand Logo -->
+            <a href="@Url.RouteUrl("Dashboard")" class="brand-link navbar-dark logo-switch">
+                    <img src="~/css/admin/images/logo.png" alt="logo.png" class="brand-image-xl logo-xl">
+                    <img src="~/css/admin/images/logo-mini.png" alt="logo.png" class="brand-image-xs logo-xs">
+                </a>
+                <div class="sidebar">
+                    <nav class="mt-2">
+                        @RenderSection("left")
+                    </nav>
+                </div>
+            </aside>
+        }
+        <div class="content-wrapper">
+            @await Html.PartialAsync("Notifications")
+            <nop-antiforgery-token />
+            @RenderBody()
+        </div>
+        <div class="main-footer">
+            <div class="container-fluid">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-4 col-xs-12 ">
+                        </div>
+                        <div class="col-md-4 col-xs-12 text-center">
+                            @((await dateTimeHelper.ConvertToUserTimeAsync(DateTime.Now)).ToString("f", CultureInfo.CurrentCulture))
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @await Html.PartialAsync("ModalPopup")
+
+    <script>
+        var AdminLTEOptions = {
+            boxWidgetOptions: {
+                boxWidgetIcons: {
+                    collapse: 'fa-minus',
+                    open: 'fa-plus'
+                }
+            }
+        };
+    </script>
+    @{
+        //scroll to a selected card (if specified)
+        var selectedCardName = Html.GetSelectedCardName();
+        if (!String.IsNullOrEmpty(selectedCardName))
+        {
+            <script>
+                location.hash = '#@(selectedCardName)';
+            </script>
+        }
+    }
+    <a id="backTop" class="btn btn-back-top bg-teal"></a>
+    <script>
+        $(document).ready(function () {
+            //enable "back top" arrow
+            $('#backTop').backTop();
+
+            //enable tooltips
+            $('[data-toggle="tooltip"]').tooltip({ placement: 'bottom' });
+        });
+        $(".navbar-toggler").click(function () {
+            $("body").toggleClass("customernav-open");
+            //$(this).toggleClass("closed");
+        });
+        $('.navbar-toggler').on('click', function () {
+            $('body').removeClass('sidebar-open');
+        });
+        $('.nav-link.menu-btn, #sidebar-overlay').on('click', function () {
+            $('body').removeClass('customernav-open');
+        });
+    </script>
+
+    @NopHtml.GenerateScripts(ResourceLocation.Footer)
+    @NopHtml.GenerateInlineScripts(ResourceLocation.Footer)
+</body>
+</html>

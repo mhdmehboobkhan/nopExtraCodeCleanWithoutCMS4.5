@@ -1,0 +1,45 @@
+@model GeneralCommonSettingsModel
+
+
+<div class="card-body">
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DisplayDefaultFooterItemSettings.DisplaySitemapFooterItem_OverrideForStore" asp-input="DisplayDefaultFooterItemSettings.DisplaySitemapFooterItem" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DisplayDefaultFooterItemSettings.DisplaySitemapFooterItem" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DisplayDefaultFooterItemSettings.DisplaySitemapFooterItem" />
+            <span asp-validation-for="DisplayDefaultFooterItemSettings.DisplaySitemapFooterItem"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DisplayDefaultFooterItemSettings.DisplayContactUsFooterItem_OverrideForStore" asp-input="DisplayDefaultFooterItemSettings.DisplayContactUsFooterItem" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DisplayDefaultFooterItemSettings.DisplayContactUsFooterItem" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DisplayDefaultFooterItemSettings.DisplayContactUsFooterItem" />
+            <span asp-validation-for="DisplayDefaultFooterItemSettings.DisplayContactUsFooterItem"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem_OverrideForStore" asp-input="DisplayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem" />
+            <span asp-validation-for="DisplayDefaultFooterItemSettings.DisplayCustomerInfoFooterItem"></span>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-override-store-checkbox asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem_OverrideForStore" asp-input="DisplayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem" asp-store-scope="@Model.ActiveStoreScopeConfiguration" />
+            <nop-label asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="DisplayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem" />
+            <span asp-validation-for="DisplayDefaultFooterItemSettings.DisplayCustomerAddressesFooterItem"></span>
+        </div>
+    </div>
+</div>

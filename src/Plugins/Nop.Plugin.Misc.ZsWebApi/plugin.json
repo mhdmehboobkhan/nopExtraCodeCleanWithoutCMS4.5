@@ -1,0 +1,11 @@
+﻿{
+  "Group": "Misc",
+  "FriendlyName": "Zs web api",
+  "SystemName": "Misc.ZsWebApi",
+  "Version": "1.00",
+  "SupportedVersions": [ "4.50" ],
+  "Author": "zulushack team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.ZsWebApi.dll",
+  "Description": "This plugin allows you to use the api's"
+}

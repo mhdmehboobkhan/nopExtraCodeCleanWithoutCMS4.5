@@ -1,0 +1,14 @@
+﻿@using Nop.Web.Framework.Infrastructure
+@{
+    Layout = "_AdminCustomerLayout";
+}
+
+@section left {
+    @RenderSection("left")
+}
+
+<div class="center-2">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnBefore })
+    @RenderBody()
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.MainColumnAfter })
+</div>

@@ -1,0 +1,56 @@
+﻿@model CommonStatisticsModel
+@using Nop.Core
+@using Nop.Web.Framework.Infrastructure
+@{
+    const string cardId = "commoncus-statistics-card";
+    const string hideCardAttributeName = "HideCommonStatisticsCard";
+    var hideCard = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), hideCardAttributeName);
+}
+
+<div class="card card-primary card-outline @if(hideCard){<text>collapsed-card</text>}" id="@cardId">
+    <div class="card-header with-border clearfix">
+        <div class="card-title">
+            <i class="far fa-chart-bar"></i>
+            @T("Dashboard.Customer.CommonStatistics")
+        </div>
+        <div class="card-tools float-right">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                @if (hideCard)
+                {
+                    <text><i class="fas fa-plus"></i></text>
+                }
+                else
+                {
+                    <text><i class="fas fa-minus"></i></text>
+                }
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row statistics-row">
+            @*<div class="col-lg-3 col-6">
+                <div class="small-box bg-lightblue">
+                    <div class="inner">
+                        <h3>@Model.NumberOfNotes</h3>
+                        <p>@T("Dashboard.Customer.NumberOfNotes")</p>
+                    </div>
+                    <div class="icon">
+                        <i class="fa-light fa-sticky-note"></i>
+                    </div>
+                    <a asp-route="CustomerNotes" class="small-box-footer">
+                        @T("Admin.Dashboard.MoreInfo")
+                        <i class="fas fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div>*@
+            <script>
+            $(document).ready(function () {
+                $('#@cardId').on('click', 'button[data-card-widget="collapse"]', function () {
+                    var collapsed = !$('#@cardId').hasClass('collapsed-card');
+                    saveUserPreferences('@(Url.Action("SavePreference", "Preferences"))', '@hideCardAttributeName', collapsed);
+                });
+            });
+            </script>
+        </div>
+    </div>
+</div>

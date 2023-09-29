@@ -1,0 +1,56 @@
+﻿@model CustomerNavigationModel
+
+@using Nop.Core.Domain.Customers
+
+@inject ICustomerService customerService
+@inject CustomerSettings customerSettings
+
+@{
+    var customerName = await customerService.GetCustomerFullNameAsync(await workContext.GetCurrentCustomerAsync());
+    var isInfo = Model.SelectedTab == CustomerNavigationEnum.Info;
+    var isPassword = Model.SelectedTab == CustomerNavigationEnum.ChangePassword;
+    var isAvatar = Model.SelectedTab == CustomerNavigationEnum.Avatar;
+}
+
+<ul class="nav nav-pills nav-sidebar flex-column nav-legacy" data-widget="treeview" role="menu">
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.AccountNavigationBefore })
+    <li class="admin-user">
+        <a class="user-img" data-toggle="collapse" href="#collapseExample" role="button"
+           aria-expanded="@(isInfo || isPassword || isAvatar ? "true" : "false")" aria-controls="collapseExample">
+            <i class="fa-light fa-user"></i>
+            <span>@customerName</span>
+            <b class="caret"></b>
+        </a>
+        <div class="collapse @(isInfo || isPassword || isAvatar ? "show" : "")" id="collapseExample">
+            <ul class="nav userdrop">
+                <li class="nav-item">
+                    <a class="nav-link @(isInfo ? "active" : "")" href="@Url.RouteUrl("CustomerInfo")">
+                        <span class="sidebar-mini"> <i class="fa-light fa-user"></i> </span>
+                        <span class="sidebar-normal"> @T("Account.CustomerInfo") </span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link @(isPassword ? "active" : "")" href="@Url.RouteUrl("CustomerChangePassword")">
+                        <span class="sidebar-mini"> <i class="fa-light fa-key"></i> </span>
+                        <span class="sidebar-normal"> @T("Account.ChangePassword") </span>
+                    </a>
+                </li>
+                @if (customerSettings.AllowCustomersToUploadAvatars)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link @(isAvatar ? "active" : "")" href="@Url.RouteUrl("CustomerAvatar")">
+                            <span class="sidebar-mini"> <i class="fa-light fa-picture-o"></i> </span>
+                            <span class="sidebar-normal"> @T("Account.Avatar") </span>
+                        </a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </li>
+    @foreach (var item in Model.CustomerNavigationItems)
+    {
+        item.SelectedTab = Model.SelectedTab;
+        @await Html.PartialAsync("_CustomerLine.Navigation", item)
+    }
+    @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.AccountNavigationAfter })
+</ul>

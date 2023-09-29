@@ -1,0 +1,88 @@
+﻿@model CustomerNavigationItemModel
+@using Nop.Web.Models.Customer
+@using Nop.Core
+@using Nop.Core.Domain.Localization
+@using Nop.Web.Framework.Menu
+@inject IWorkContext workContext
+@inject LocalizationSettings localizationSettings
+
+@{
+    var supportRtl = (await workContext.GetWorkingLanguageAsync()).Rtl && !localizationSettings.IgnoreRtlPropertyForAdminArea;
+}
+@if (!string.IsNullOrEmpty(Model.RouteName) || !string.IsNullOrEmpty(Model.Link))
+{
+    var isActive = Model.SelectedTab == Model.Tab;
+    var link = Model.Link;
+    if (!string.IsNullOrEmpty(Model.RouteName))
+    {
+        link = Url.RouteUrl(Model.RouteName);
+    }
+    <li class="nav-item">
+        <a href="@link" @(isActive ? Html.Raw("class=\"nav-link active\"") : Html.Raw("class=\"nav-link\""))>
+            @if (!string.IsNullOrEmpty(Model.ItemClass))
+            {
+                <text>
+                    <i class="nav-icon @Url.Content(Model.ItemClass)"></i>
+                </text>
+            }
+            <p>@Model.Title</p>
+        </a>
+    </li>
+}
+else
+{
+    var childNodes = Model.ChildCustomerNavigationItems.ToList();
+    var isActive = Model.SelectedTab == Model.Tab;
+    if (!isActive)
+    {
+        isActive = childNodes.Any(x => x.Tab == Model.SelectedTab);
+    }
+
+    var hasChildNodes = childNodes.Any();
+    var liCssClass = "";
+
+
+    if (hasChildNodes)
+    {
+        liCssClass = "nav-item has-treeview";
+    }
+
+    if (isActive)
+    {
+        if (!String.IsNullOrEmpty(liCssClass))
+        {
+            liCssClass += " ";
+        }
+        liCssClass += "menu-open";
+    }
+
+    <li @(!String.IsNullOrEmpty(liCssClass) ? Html.Raw("class=\"" + liCssClass + "\"") : null)>
+        <a href="#" @(isActive ? Html.Raw("class=\"nav-link active\"") : Html.Raw("class=\"nav-link\""))>
+            @if (!string.IsNullOrEmpty(Model.ItemClass))
+            {
+                <text>
+                    <i class="@Url.Content(Model.ItemClass) nav-icon"></i>
+                </text>
+            }
+            <p>@Model.Title</p>
+            @if (supportRtl)
+            {
+                <i class="right fas fa-angle-right"></i>
+            }
+            else
+            {
+                <i class="right fas fa-angle-left "></i>
+            }
+        </a>
+        @if (Model.ChildCustomerNavigationItems.Any())
+        {
+            <ul class="nav nav-treeview">
+                @foreach (var childItem in Model.ChildCustomerNavigationItems)
+                {
+                    childItem.SelectedTab = Model.SelectedTab;
+                    @await Html.PartialAsync("_CustomerLine.Navigation", childItem)
+                }
+            </ul>
+        }
+    </li>
+}

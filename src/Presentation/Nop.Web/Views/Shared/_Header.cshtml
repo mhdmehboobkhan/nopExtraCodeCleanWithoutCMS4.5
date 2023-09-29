@@ -1,0 +1,74 @@
+﻿
+@{
+    var store = await storeContext.GetCurrentStoreAsync();
+}
+
+<div class="header">
+    @await Component.InvokeAsync("AdminHeaderLinks")
+    <div class="container-box">
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderBefore })
+        <div class="header-selectors-wrapper">
+            @await Component.InvokeAsync("LanguageSelector")
+            @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderSelectors })
+        </div>
+        <div class="header-upper">
+            @if (!string.IsNullOrEmpty(store.CompanyPhoneNumber))
+            {
+                <a href="tel:@(store.CompanyPhoneNumber)" class="tel-box">Tel: @store.CompanyPhoneNumber</a>
+            }
+            <div class="header-links-wrapper">
+                @await Component.InvokeAsync("HeaderLinks")
+            </div>
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderMiddle })
+        <div class="header-lower">
+            <div class="header-logo">
+                @await Component.InvokeAsync("Logo")
+            </div>
+            <div class="header-menu">
+                @await Component.InvokeAsync("TopMenu")
+                <div class="menu-overlay"><span class="menu-close">X</span></div>
+            </div>
+        </div>
+        @await Component.InvokeAsync("Widget", new { widgetZone = PublicWidgetZones.HeaderAfter })
+    </div>
+</div>
+<script asp-location="Footer">
+    // sticky header - start
+        // --------------------------------------------------
+        $(window).on('scroll', function () {
+            if ($(this).scrollTop() > 50) {
+                $('body').addClass("sticky-header")
+            } else {
+                $('body').removeClass("sticky-header")
+            }
+        });
+    // sticky header - end
+    // --------------------------------------------------
+
+    if ($('.admin-header-links').is(':visible')) {
+        $('body').addClass("admin-login");
+    }
+
+    $(".sublist-toggle").click(function () {
+        $(this).toggleClass('closed');
+        removeClass = false;
+    });
+
+    $(".menu-toggle").click(function () {
+        $(".top-menu.mobile").toggleClass("menumobile");
+    });
+    $(".menu-toggle").click(function () {
+        $("body").toggleClass("menumobile");
+
+    });
+    $('.menu-close, .menu-overlay').on('click', function () {
+        $('body').removeClass('menumobile');
+    });
+
+    var url = window.location;
+    jQuery('.top-menu li a[href="' + url + '"]').parent().addClass('active');
+    jQuery('.top-menu li a').filter(function () {
+        return this.href == url;
+    }).parent().addClass('active').parent().parent().addClass('active')
+</script>

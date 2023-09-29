@@ -1,0 +1,62 @@
+﻿@model DashboardModel
+@{
+    //page title
+    ViewBag.PageTitle = T("Admin.Dashboard").Text;
+
+    var canManageCustomers = await permissionService.AuthorizeAsync(StandardPermissionProvider.ManageCustomers);
+
+    //close configuration steps value
+    //const string closeCardAttributeName = "CloseConfigurationSteps";
+    //var closeConfigurationStepsCard = await genericAttributeService.GetAttributeAsync<bool>(await workContext.GetCurrentCustomerAsync(), closeCardAttributeName);
+
+     //active menu item (system name)
+    NopHtml.SetActiveMenuItemSystemName("Dashboard");
+}
+
+<link rel="stylesheet" href="~/lib_npm/ionicons/css/ionicons.min.css" />
+
+<div class="content-header">
+    <h1>
+        @T("Admin.Dashboard")
+    </h1>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    @*@if (!closeConfigurationStepsCard)
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                @await Html.PartialAsync("_ConfigurationSteps")
+                            </div>
+                        </div>
+                    }*@
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.DashboardTop, additionalData = Model })
+                    @if (canManageCustomers)
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                @await Component.InvokeAsync("CommonStatistics")
+                            </div>
+                        </div>
+                    }
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.DashboardCommonstatisticsAfter, additionalData = Model })
+                    @if (canManageCustomers)
+                    {
+                        <div class="row">
+                            @if (canManageCustomers)
+                            {
+                                <div class="col-md-12">
+                                    @await Html.PartialAsync("_CustomerStatistics")
+                                </div>
+                            }
+                        </div>
+                    }
+                    @await Component.InvokeAsync("AdminWidget", new { widgetZone = AdminWidgetZones.DashboardBottom, additionalData = Model })
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

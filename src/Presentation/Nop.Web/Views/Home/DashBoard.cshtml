@@ -1,0 +1,33 @@
+﻿@model DashboardModel
+
+@{
+    Layout = "_ColumnsAdmin";
+    //page class
+    NopHtml.AppendPageCssClassParts("html-dashboard");
+}
+
+@section left
+{
+    @await Component.InvokeAsync("CustomerNavigation", new { selectedTabId = CustomerNavigationEnum.DashBoard })
+}
+
+<div class="content-header clearfix">
+    <h1 class="float-left">
+        @T("Account.DashBoard")
+    </h1>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @await Component.InvokeAsync("CustomerCommonStatistics")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

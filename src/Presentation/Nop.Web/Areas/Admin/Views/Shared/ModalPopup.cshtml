@@ -1,0 +1,17 @@
+﻿<div id="genericmodal" class="modal genericmodal" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <button type="button" class="close modalclose" data-dismiss="modal" aria-label="Close"><h5><span aria-hidden="true">x</span></h5></button>
+            <div class="form-horizontal">
+                <div id="genericmodalview" class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#genericmodal").on("hidden.bs.modal", function () {
+        $("#genericmodalview").html("");
+    });
+</script>
